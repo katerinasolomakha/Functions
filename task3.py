@@ -1,4 +1,12 @@
 def symbol_statistics(text):
+    """Return statistics
+    
+    Args:
+        -text(str)
+        
+    Returns:
+        - amount symbol in dictionary
+    """
     stat={}
     for letter in text:
         letter = letter.lower()
