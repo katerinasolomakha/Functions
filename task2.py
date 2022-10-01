@@ -1,46 +1,87 @@
-def y_date(day, month, year):
-    i=1
-    last_day=[31,28,31,30,31,30,31,31,30,31,30,31]
-    if day==1:
-        if month==1:
-            month=12
-            day=31
-            year=year-1
-        else:
-            while i!=month:
-                i=i+1
-            print(i)
-            if (i==3) and (year%4==0):
-                    last_day[i]=last_day[i-2]+1
-                    day=last_day[i]
-            else:
-                day=last_day[i-2]
-            month=month-1
-    else:
-        day=day-1
-    return day, month, year
- 
-def n_date(day, month, year):
-    i=1
-    next_day=[31,28,31,30,31,30,31,31,30,31,30,31]
-    if (day==31) and (month==12):
-        year=year+1
-        day=1
-        month=1
-    else:
-        while i!=month:
-            i=i+1
-        if (i==2) and (year%4==0) and (day==28) :
-                next_day[i]=next_day[i-1]+1
-                day=next_day[i]
-        else:
-            if day==next_day[i-1] or (i==2) and (day==29):
-                month=month+1
-                day=1
-            else:
-                day=day+1
-        return day, month, year
-(day, month, year) = [int(i) for i in input().split()]
+days_in_month = {
+    1: 31,
+    2: 28,
+    3: 31,
+    4: 30,
+    5: 31,
+    6: 30,
+    7: 31,
+    8: 31,
+    9: 30,
+    10: 31,
+    11: 30,
+    12: 31
+}
 
-print(y_date(day, month, year))
-print(n_date(day, month, year))
+
+def next_date(day, month, year):
+    """
+    Возвращает следующую дату
+    Arg:
+        day(int): день
+        month(int): месяц
+        year(int): год
+    Returns:
+        (day, month, year):следующая дата
+    """
+    day += 1
+    if day > days_in_month[month] + (leap_year(year) if month == 2 else 0):
+        day = 1
+        month += 1
+    if month == 13:
+        month = 1
+        year += 1
+    return day, month, year
+
+
+def prev_date(day, month, year):
+    """
+    Возвращает предыдущую дату
+    Arg:
+        day(int): день
+        month(int): месяц
+        year(int): год
+    Returns:
+        (day, month, year):предыдущая дата
+    """
+    day -= 1
+    if day == 0:
+        month -= 1
+        if month == 0:
+            month = 12
+            year -= 1
+        day = days_in_month[month] \
+            + leap_year(year) if month == 2 else 0
+    return day, month, year
+
+
+def leap_year(year):
+    """
+    Определяет високосный ли год
+    Arg:
+        year(int): год
+    Returns:
+        bool: високосный ли год
+    """
+    return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
+
+
+def print_date(day, month, year):
+    """
+    Выводит дату через точку
+    Arg:
+        day(int): день
+        month(int): месяц
+        year(int): год
+    """
+    print(f'{day:0>2}.{month:0>2}.{year}')
+
+
+day, month, year = map(
+    int,
+    input('Введите дату, например 24.09.2022-->').split('.')
+)
+print('Предыдущая дата - ', end='')
+print_date(*prev_date(day, month, year))
+print('Следущая дата - ', end='')
+print_date(*next_date(day, month, year))
